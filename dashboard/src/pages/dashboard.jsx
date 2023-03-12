@@ -5,6 +5,7 @@ import CreateFood from '../components/create-food';
 import MainHeader from '../components/header';
 import Products from '../components/products';
 import MainSidebar from '../components/sidebar';
+import UpdateFood from '../components/update-food';
 
 function Dashboard() {
     const params = useParams()
@@ -13,6 +14,10 @@ function Dashboard() {
         switch (params["*"]) {
             case "manager/create":
                 return <CreateFood />
+            case "manager/modify":
+                return <UpdateFood />
+            case "manager/remove":
+                
         
             default:
                 return <Products />

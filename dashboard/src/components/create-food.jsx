@@ -14,6 +14,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
+import { createNewProduct } from '../utils/product-api';
 
 const { Option } = Select;
 
@@ -50,27 +51,14 @@ function CreateFood() {
 
     const [message, setMessage] = useState(null)
 
-    const createNewProduct = async (product) => {
-        try {
-            const res = await fetch("http://localhost:9000/foods", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(product)
-            })
-            await res.json()
-
+    const onFinish = async (values) => {
+        const isSuccess = await createNewProduct(values)
+        if (isSuccess) {
             setMessage({ success: true, text: 'Create new product successfully !' })
             form.resetFields()
-        } catch (error) {
+        } else {
             setMessage({ success: false, text: 'Create new product failed !' })
         }
-    }
-
-    const onFinish = async (values) => {
-        console.log('Received values of form: ', values);
-        await createNewProduct(values)
     };
 
     const onMessageClose = () => {
@@ -114,7 +102,7 @@ function CreateFood() {
                     label="Description"
                     rules={[{ required: true, message: 'This field cannot be empty !' }]}
                 >
-                    <Input.TextArea showCount maxLength={300} />
+                    <Input.TextArea showCount maxLength={3000} />
                 </Form.Item>
 
                 <Form.Item

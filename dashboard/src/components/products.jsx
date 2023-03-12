@@ -1,22 +1,12 @@
 import { Layout, Row, theme } from 'antd';
 import { useEffect, useState } from 'react';
+import { fetchProducts } from '../utils/product-api';
 import Product from './product';
 const { Content } = Layout;
 
 function Products() {
     const { token: { colorBgContainer } } = theme.useToken();
     const [products, setProducts] = useState([])
-
-    const fetchProducts = async () => {
-        try {
-            const res = await fetch("http://localhost:9000/foods")
-            const jsonData = await res.json()
-
-            return jsonData
-        } catch (error) {
-            return []
-        }
-    }
 
     useEffect(() => {
         (async () => {
