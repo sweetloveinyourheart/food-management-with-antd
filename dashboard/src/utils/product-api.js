@@ -1,9 +1,13 @@
+import axios from 'axios'
+
 const fetchProducts = async () => {
     try {
-        const res = await fetch("http://localhost:9000/foods")
-        const jsonData = await res.json()
+        const { data, error } = await axios.get("http://localhost:9000/foods")
+        if (!data || error) {
+            throw new Error()
+        }
 
-        return jsonData
+        return data
     } catch (error) {
         return []
     }
@@ -11,16 +15,9 @@ const fetchProducts = async () => {
 
 const createNewProduct = async (product) => {
     try {
-        const res = await fetch("http://localhost:9000/foods", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(product)
-        })
+        const { data, error } = await axios.post("http://localhost:9000/foods", product)
 
-        const data = await res.json()
-        if (data?.error) throw new Error()
+        if (!data || error) throw new Error()
 
         return true
     } catch (error) {
@@ -30,10 +27,10 @@ const createNewProduct = async (product) => {
 
 const searchProductById = async (id) => {
     try {
-        const res = await fetch(`http://localhost:9000/foods/${id}`)
-        const data = await res.json()
-        if (data?.error) throw new Error()
-        
+        const { data, error } = await axios.get(`http://localhost:9000/foods/${id}`)
+
+        if (!data || error) throw new Error()
+
         return data
     } catch (error) {
         return null
@@ -42,16 +39,9 @@ const searchProductById = async (id) => {
 
 const updateProduct = async (id, product) => {
     try {
-        const res = await fetch(`http://localhost:9000/foods/${id}`, {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(product)
-        })
+        const { data, error } = await axios.patch(`http://localhost:9000/foods/${id}`, product)
 
-        const data = await res.json()
-        if (data?.error) throw new Error()
+        if (!data || error) throw new Error()
 
         return true
     } catch (error) {
@@ -62,10 +52,9 @@ const updateProduct = async (id, product) => {
 
 const removeProduct = async (id) => {
     try {
-        const res = await fetch(`http://localhost:9000/foods/${id}`, { method: 'DELETE' })
+        const { data, error } = await axios.delete(`http://localhost:9000/foods/${id}`, { method: 'DELETE' })
 
-        const data = await res.json()
-        if (data?.error) throw new Error()
+        if (!data || error) throw new Error()
 
         return true
     } catch (error) {
