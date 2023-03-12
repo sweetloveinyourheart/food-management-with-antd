@@ -50,8 +50,5 @@ export class CreateFoodDto {
     ingredients: string[]
 
     @ApiProperty()
-    allergens: string[]
-
-    @ApiProperty()
     nutrition: NutritionDTO
 }

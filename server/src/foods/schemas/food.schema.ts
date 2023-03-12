@@ -62,9 +62,6 @@ export class Food {
     ingredients: string[]
 
     @Prop()
-    allergens: string[]
-
-    @Prop()
     image: string
 
     @Prop({ type: NutritionSchema })

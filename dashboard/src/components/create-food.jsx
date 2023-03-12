@@ -1,4 +1,5 @@
 import {
+    Alert,
     Button,
     Col,
     Form,
@@ -12,11 +13,11 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 import { Content } from 'antd/es/layout/layout';
 import Title from 'antd/es/typography/Title';
-import React from 'react';
+import React, { useState } from 'react';
 
 const { Option } = Select;
 
-const formItemLayout = {
+export const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
         sm: { span: 12 },
@@ -28,7 +29,7 @@ const formItemLayout = {
     layout: 'vertical'
 };
 
-const formItemLayoutWithOutLabel = {
+export const formItemLayoutWithOutLabel = {
     wrapperCol: {
         xs: {
             span: 24,
@@ -41,15 +42,40 @@ const formItemLayoutWithOutLabel = {
     },
 };
 
-const categories = ["meat", "fish", "fruit", "vegetable", "bakery", "dairy", "snacks", "beverage"]
+export const categories = ["meat", "fish", "fruit", "vegetable", "bakery", "dairy", "snacks", "beverage"]
 
 function CreateFood() {
     const { token: { colorBgContainer } } = theme.useToken();
     const [form] = Form.useForm();
 
-    const onFinish = (values) => {
+    const [message, setMessage] = useState(null)
+
+    const createNewProduct = async (product) => {
+        try {
+            const res = await fetch("http://localhost:9000/foods", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(product)
+            })
+            await res.json()
+
+            setMessage({ success: true, text: 'Create new product successfully !' })
+            form.resetFields()
+        } catch (error) {
+            setMessage({ success: false, text: 'Create new product failed !' })
+        }
+    }
+
+    const onFinish = async (values) => {
         console.log('Received values of form: ', values);
+        await createNewProduct(values)
     };
+
+    const onMessageClose = () => {
+        setMessage(null)
+    }
 
     return (
         <Content
@@ -66,7 +92,7 @@ function CreateFood() {
                 form={form}
                 name="create-food"
                 onFinish={onFinish}
-                initialValues={{ residence: ['zhejiang', 'hangzhou', 'xihu'], prefix: '86' }}
+                initialValues={{ price: 0, weight: 0 }}
                 style={{ maxWidth: 500 }}
                 scrollToFirstError
             >
@@ -124,7 +150,15 @@ function CreateFood() {
                     </Col>
                 </Row>
 
-                <Form.List name="ingredients">
+                <Form.List name="ingredients" rules={[
+                    {
+                        validator: async (_, ingredients) => {
+                            if (!ingredients || ingredients.length < 1) {
+                                return Promise.reject(new Error('At least 1 ingredient'));
+                            }
+                        },
+                    },
+                ]}>
                     {(fields, { add, remove }, { errors }) => (
                         <>
                             {fields.map((field, index) => (
@@ -164,53 +198,6 @@ function CreateFood() {
                                     icon={<PlusOutlined />}
                                 >
                                     Add new ingredient
-                                </Button>
-                                <Form.ErrorList errors={errors} />
-                            </Form.Item>
-                        </>
-                    )}
-                </Form.List>
-
-                <Form.List name="allergens">
-                    {(fields, { add, remove }, { errors }) => (
-                        <>
-                            {fields.map((field, index) => (
-                                <Form.Item
-                                    {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                                    label={index === 0 ? 'Allergens' : ''}
-                                    required={true}
-                                    key={field.key}
-                                >
-                                    <Form.Item
-                                        {...field}
-                                        validateTrigger={['onChange', 'onBlur']}
-                                        noStyle
-                                    >
-                                        <Input
-                                            placeholder="Allergen name"
-                                            style={{
-                                                width: '60%',
-                                            }}
-                                        />
-                                    </Form.Item>
-                                    {fields.length > 1 ? (
-                                        <MinusCircleOutlined
-                                            className="dynamic-delete-button"
-                                            onClick={() => remove(field.name)}
-                                        />
-                                    ) : null}
-                                </Form.Item>
-                            ))}
-                            <Form.Item>
-                                <Button
-                                    type="dashed"
-                                    onClick={() => add()}
-                                    style={{
-                                        width: '60%',
-                                    }}
-                                    icon={<PlusOutlined />}
-                                >
-                                    Add allergen
                                 </Button>
                                 <Form.ErrorList errors={errors} />
                             </Form.Item>
@@ -358,6 +345,16 @@ function CreateFood() {
                     </Button>
                 </Form.Item>
             </Form>
+            {message
+                ? <Alert
+                    message={message.text}
+                    type={message.success ? "success" : "error"}
+                    showIcon
+                    closable
+                    afterClose={onMessageClose}
+                />
+                : null
+            }
         </Content>
     );
 };
