@@ -59,9 +59,24 @@ const updateProduct = async (id, product) => {
     }
 }
 
+
+const removeProduct = async (id) => {
+    try {
+        const res = await fetch(`http://localhost:9000/foods/${id}`, { method: 'DELETE' })
+
+        const data = await res.json()
+        if (data?.error) throw new Error()
+
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
 export {
     createNewProduct,
     searchProductById,
     updateProduct,
-    fetchProducts
+    fetchProducts,
+    removeProduct
 }

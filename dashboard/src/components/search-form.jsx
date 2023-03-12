@@ -4,7 +4,7 @@ import Search from "antd/es/input/Search";
 function SearchForm({ onSearch }) {
     return (
         <Space direction="vertical" style={{ marginBottom: 12 }}>
-            <Search placeholder="input search text" onSearch={onSearch} enterButton />
+            <Search placeholder="Enter product id" onSearch={onSearch} enterButton />
         </Space>
     );
 }

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import CreateFood from '../components/create-food';
 import MainHeader from '../components/header';
 import Products from '../components/products';
+import RemoveFood from '../components/remove-food';
 import MainSidebar from '../components/sidebar';
 import UpdateFood from '../components/update-food';
 
@@ -17,7 +18,7 @@ function Dashboard() {
             case "manager/modify":
                 return <UpdateFood />
             case "manager/remove":
-                
+                return <RemoveFood />
         
             default:
                 return <Products />
