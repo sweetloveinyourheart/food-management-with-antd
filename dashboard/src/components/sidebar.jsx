@@ -1,5 +1,5 @@
 import {
-    UserOutlined,
+    PieChartOutlined,
     LaptopOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
@@ -40,7 +40,7 @@ function MainSidebar() {
                 items={[
                     {
                         label: 'All products',
-                        icon: <UserOutlined />,
+                        icon: <PieChartOutlined />,
                         key: `all-product`,
                     },
                     {
