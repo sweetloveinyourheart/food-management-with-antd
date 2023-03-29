@@ -7,6 +7,23 @@ async function login(username, password) {
         if (!data || error) throw new Error()
 
         return {
+            access_token: data.access_token,
+            refresh_token: data.refresh_token
+        }
+    } catch (error) {
+        return {
+            access_token: null
+        }
+    }
+}
+
+async function refreshToken(token) {
+    try {
+        const { data, error } = await axios.get("http://localhost:9000/authentication/refresh-token?token=" + token)
+
+        if (!data || error) throw new Error()
+
+        return {
             access_token: data.access_token
         }
     } catch (error) {
@@ -16,13 +33,9 @@ async function login(username, password) {
     }
 }
 
-async function getUser(access_token) {
+async function getUser() {
     try {
-        const { data, error } = await axios.get("http://localhost:9000/authentication/user", { 
-            headers: {
-                "Authorization": `Bearer ${access_token}`
-            }
-         })
+        const { data, error } = await axios.get("http://localhost:9000/authentication/user")
         if (!data || error) throw new Error()
 
         return data
@@ -33,5 +46,6 @@ async function getUser(access_token) {
 
 export {
     login,
+    refreshToken,
     getUser
 }
